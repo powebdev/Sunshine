@@ -32,9 +32,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.android.sunshine.app.data.WeatherContract;
-import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
@@ -139,6 +139,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         // Get a reference to the ListView, and attach this adapter to it.
         mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        mListView.setEmptyView(rootView.findViewById(R.id.listview_forecast_empty));
         mListView.setAdapter(mForecastAdapter);
         // We'll call our MainActivity
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -183,12 +184,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     // since we read the location when we create the loader, all we need to do is restart things
     void onLocationChanged( ) {
-        updateWeather();
         getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
-    }
-
-    private void updateWeather() {
-        SunshineSyncAdapter.syncImmediately(getActivity());
     }
 
     private void openPreferredLocationInMap() {
@@ -258,6 +254,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             // to, do so now.
             mListView.smoothScrollToPosition(mPosition);
         }
+
+        updateEmptyView();
+
     }
 
     @Override
@@ -269,6 +268,19 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         mUseTodayLayout = useTodayLayout;
         if (mForecastAdapter != null) {
             mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
+        }
+    }
+
+    private void updateEmptyView(){
+        if(mForecastAdapter.getCount() == 0){
+            TextView tv = (TextView) getView().findViewById(R.id.listview_forecast_empty);
+            if(null != tv){
+                int message = R.string.empty_forecast_list;
+                if(!Utility.isNetworkAvailable(getActivity())){
+                    message = R.string.empty_forecast_list_no_network;
+                }
+                tv.setText(message);
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         super.onCreate(savedInstanceState);
         mLocation = Utility.getPreferredLocation(this);
 
-        setContentView(R.layout.layout);
+        setContentView(R.layout.activity_main);
         if (findViewById(R.id.weather_detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be

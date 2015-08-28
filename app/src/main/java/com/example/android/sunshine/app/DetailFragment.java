@@ -101,9 +101,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                              Bundle savedInstanceState) {
 
         Bundle arguments = getArguments();
-        if(arguments != null){
+        if (arguments != null) {
             mUri = arguments.getParcelable(DetailFragment.DETAIL_URI);
         }
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mIconView = (ImageView) rootView.findViewById(R.id.detail_icon);
         mDateView = (TextView) rootView.findViewById(R.id.detail_date_textview);
@@ -161,7 +162,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (mUri != null) {
+        if ( null != mUri ) {
+            // Now create and return a CursorLoader that will take care of
+            // creating a Cursor for the data being displayed.
             return new CursorLoader(
                     getActivity(),
                     mUri,
@@ -193,6 +196,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             // Read description from cursor and update view
             String description = data.getString(COL_WEATHER_DESC);
             mDescriptionView.setText(description);
+
+            // For accessibility, add a content description to the icon field
+            mIconView.setContentDescription(description);
 
             // Read high temperature from cursor and update view
             boolean isMetric = Utility.isMetric(getActivity());
